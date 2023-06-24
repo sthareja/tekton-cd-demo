@@ -93,16 +93,25 @@ command.install() {
   oc apply -f config/maven-configmap.yaml -n $cicd_prj
   oc apply -f pipelines/pipeline-pvc.yaml -n $cicd_prj
   oc apply -f pipelines/petclinic-tests-git-resource.yaml -n $cicd_prj
+  info "Apply Done"
   sed "s/demo-dev/$dev_prj/g" pipelines/pipeline-deploy-dev.yaml | oc apply -f - -n $cicd_prj
   sed "s/demo-dev/$dev_prj/g" pipelines/pipeline-deploy-stage.yaml | sed -E "s/demo-stage/$stage_prj/g" | oc apply -f - -n $cicd_prj
   sed "s/demo-dev/$dev_prj/g" pipelines/petclinic-image-resource.yaml | oc apply -f - -n $cicd_prj
+  info "Stage 1 Done"
   sed "s#https://github.com/siamaksade/spring-petclinic#http://$GOGS_HOSTNAME/gogs/spring-petclinic.git#g" pipelines/petclinic-git-resource.yaml | oc apply -f - -n $cicd_prj
+  info "Stage 2 Done"
   sed "s#https://github.com/siamaksade/spring-petclinic-config#http://$GOGS_HOSTNAME/gogs/spring-petclinic-config.git#g" pipelines/petclinic-config-git-resource.yaml | oc apply -f - -n $cicd_prj
+  info "Stage 3 Done"
   sed "s#https://github.com/siamaksade/spring-petclinic-gatling#http://$GOGS_HOSTNAME/gogs/spring-petclinic-gatling.git#g" pipelines/petclinic-tests-git-resource.yaml | oc apply -f - -n $cicd_prj
+  info "Stage 4 Done"
+
   
   oc apply -f triggers/gogs-triggerbinding.yaml -n $cicd_prj
+  info "Stage 5 Done"
   oc apply -f triggers/triggertemplate.yaml -n $cicd_prj
+  info "Stage 6 Done"
   sed "s/demo-dev/$dev_prj/g" triggers/eventlistener.yaml | oc apply -f - -n $cicd_prj
+  info "Stage 7 Done"
 
   info "Initiatlizing git repository in Gogs and configuring webhooks"
   sed "s/@HOSTNAME/$GOGS_HOSTNAME/g" config/gogs-configmap.yaml | oc create -f - -n $cicd_prj
