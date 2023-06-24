@@ -35,7 +35,7 @@ On every push to the `spring-petclinic` git repository on Gogs git server, the f
 
     ```
     $ oc new-project demo
-    $ git clone https://github.com/siamaksade/tekton-cd-demo 
+    $ git clone https://github.com/sthareja/tekton-cd-demo 
     $ demo.sh install
     ```
 
